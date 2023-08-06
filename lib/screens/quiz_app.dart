@@ -13,57 +13,87 @@ class _HomePageState extends State<HomePage> {
   int? yourChoiceIndex;
 
   int result = 0;
+  List chosenIndex = [];
 
   List correctAnswers = [
-    'football ⚽',
-    'black ⚫',
-    'Cheetah 🐆',
-    'Messi 🥇',
+    'football',
+    'black',
+    'plane',
+    'Messi',
   ];
 
   List chosenAnswers = [];
 
   List<Map<String, dynamic>> questionsWithAnswers = [
     {
-      'question': 'What is the best sport ?',
+      'question': "What is the best sport ?",
       'answers': [
-        'basketball 🏀',
-        'football ⚽',
-        'volleyball 🏐',
-        'tennis 🎾',
+        'football',
+        'volleyball',
+        'basketball',
+        'tennis',
+      ],
+      'Icons' : [
+        Icons.sports_soccer,
+        Icons.sports_volleyball,
+        Icons.sports_basketball,
+        Icons.sports_tennis,
+
       ],
     },
     {
       'question': 'What is the most beautiful color ?',
       'answers': [
-        'red 🔴',
-        'blue 🔵',
-        'black ⚫',
-        'green 🟢',
+        'red',
+        'blue',
+        'black',
+        'green',
+      ],
+      'Icons' : [
+        Icons.color_lens,
+        Icons.color_lens_outlined,
+        Icons.colorize_sharp,
+        Icons.format_color_fill,
+
       ],
     },
     {
-      'question': 'What is the fastest animal ?',
+      'question': 'What is the fastest travel way ?',
       'answers': [
-        'horse 🐎',
-        'turtle 🐢',
-        'dog 🐕',
-        'Cheetah 🐆',
+        'plane',
+        'car',
+        'bus',
+        'boat',
+      ],
+      'Icons' : [
+         Icons.airplanemode_on,
+         Icons.directions_car,
+         Icons.directions_bus,
+         Icons.directions_boat,
+
       ],
     },
     {
       'question': 'Who is the best player? You\'re right, he is Messi',
       'answers': [
-        'Messi 🥇',
-        'Messi 🥇',
-        'Messi 🥇',
-        'Messi 🥇',
+        'Messi',
+        'Messi',
+        'Messi',
+        'Messi',
+      ],
+      'Icons' : [
+        Icons.looks_one,
+        Icons.looks_one,
+        Icons.looks_one,
+        Icons.looks_one,
+
       ],
     },
   ];
 
   @override
   Widget build(BuildContext context) {
+    // final progress = questionIndex;
     final questionWithAnswer = questionsWithAnswers[questionIndex];
     final size = MediaQuery.of(context).size;
     return Scaffold(
@@ -81,21 +111,52 @@ class _HomePageState extends State<HomePage> {
                           style: const TextStyle(
                               fontSize: 26,
                               fontWeight: FontWeight.bold,
-                              letterSpacing: 1)),
+                              // letterSpacing: 1
+                          )),
+
                       SizedBox(
                         height: size.height * 0.01,
                       ),
-                      Text('Answer and get points',
-                          style: const TextStyle(
+                      const Text('Answer and get points',
+                          style: TextStyle(
                             fontSize: 18,
                             color: Colors.black54,
                           )),
                       SizedBox(
                         height: size.height * 0.1,
                       ),
-                      for (int i = 0;
-                          i < questionWithAnswer['answers'].length;
-                          i++)
+
+                      RichText(
+                        text: TextSpan(
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: 'Step ${questionIndex + 1}',
+                              style:
+                                  const TextStyle(color: Colors.black, fontSize: 20),
+                            ),
+                            const TextSpan(
+                              text: ' of 4',
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 20),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      LinearProgressIndicator(
+                        value: questionIndex.toDouble() / 4,
+                        backgroundColor: Colors.grey.shade300,
+                        valueColor: const AlwaysStoppedAnimation<Color>(
+                          Colors.green,
+                        ),
+                      ),
+                      SizedBox(
+                        height: size.height * 0.02,
+                      ),
+
+                      for (int i = 0; i < questionWithAnswer['answers'].length; i++)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 16),
                           child: InkWell(
@@ -103,7 +164,6 @@ class _HomePageState extends State<HomePage> {
                               setState(() {
                                 yourChoiceIndex = i;
                               });
-                              print(yourChoiceIndex);
                             },
                             child: Container(
                               width: double.infinity,
@@ -121,12 +181,12 @@ class _HomePageState extends State<HomePage> {
                                 child: Row(
                                   children: [
                                     Icon(
-                                      Icons.add,
+                                      questionWithAnswer['Icons'][i],
                                       color: i != yourChoiceIndex
                                           ? Colors.black
                                           : Colors.white,
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       width: 16,
                                     ),
                                     Text(
@@ -142,29 +202,43 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                         ),
-                      Spacer(),
+                      const Spacer(),
                       SizedBox(
                         width: double.infinity,
                         height: 50,
                         child: ElevatedButton(
                           onPressed: () {
                             setState(() {
-                              // chosenAnswers.add(questionWithAnswer['answers'][i]);
-                              print(chosenAnswers);
-                              if (questionIndex < questionsWithAnswers.length - 1) {
-                                questionIndex++;
-                              } else {
-                                for (int j = 0; j < chosenAnswers.length; j++) {
-                                  if (chosenAnswers[j] == correctAnswers[j]) {
-                                    result++;
+                              // chosenAnswers.add(questionWithAnswer['answers'][yourChoiceIndex]);
+                              if (yourChoiceIndex != null) {
+                                chosenAnswers.add(questionWithAnswer['answers']
+                                    [yourChoiceIndex]);
+                                if (questionIndex <
+                                    questionsWithAnswers.length - 1) {
+                                  questionIndex++;
+                                } else {
+                                  for (int j = 0;
+                                      j < chosenAnswers.length;
+                                      j++) {
+                                    if (chosenAnswers[j] == correctAnswers[j]) {
+                                      result++;
+                                    }
                                   }
+                                  showResultsMessage = true;
                                 }
-                                showResultsMessage = true;
+                                yourChoiceIndex = null;
+                              } else {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                  content: Text('Choose an answer first'),
+                                  duration: Duration(seconds: 2),
+                                  backgroundColor: Colors.red,
+                                  behavior: SnackBarBehavior.floating,
+                                ));
                               }
-                              yourChoiceIndex = null;
                             });
                           },
-                          child: Text('Next'),
+                          child: const Text('Next'),
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.black,
                               shape: RoundedRectangleBorder(
@@ -172,7 +246,7 @@ class _HomePageState extends State<HomePage> {
                               )),
                         ),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
 
                       // for (int i = 0; i < questionWithAnswer['answers'].length; i++)
                       //   Padding(
@@ -227,7 +301,7 @@ class _HomePageState extends State<HomePage> {
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 30,
-                                color: Colors.indigo.shade700)),
+                                color: Colors.green.shade900)),
                         const SizedBox(
                           height: 5,
                         ),
@@ -249,7 +323,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                           style: TextButton.styleFrom(
                             foregroundColor: Colors.green,
-                            textStyle: TextStyle(
+                            textStyle: const TextStyle(
                               fontSize: 18,
                             ),
                           ),
